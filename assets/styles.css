@@ -1,0 +1,131 @@
+/* Styles personnalisés pour CV AI Analyzer */
+
+/* Variables de couleurs */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-bg: #f8f9fa;
+    --dark-text: #333333;
+}
+
+/* Conteneur principal */
+.main {
+    padding: 2rem;
+}
+
+/* Titres */
+.main-title {
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* Boutons */
+.stButton > button {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Cartes de metrics */
+.metric-card {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Zones de score */
+.score-excellent {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.score-bon {
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+.score-moyen {
+    color: #fd7e14;
+    font-weight: bold;
+}
+
+.score-faible {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+/* Cartes d'analyse */
+.analysis-card {
+    background-color: var(--light-bg);
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 5px solid var(--primary-color);
+    margin: 10px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Listes de compétences */
+.skill-present {
+    color: var(--success-color);
+}
+
+.skill-missing {
+    color: var(--danger-color);
+}
+
+/* Expander personnalisé */
+.streamlit-expanderHeader {
+    background-color: var(--light-bg);
+    border-radius: 8px;
+}
+
+/* Upload de fichier */
+.uploadedFile {
+    border: 2px dashed var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+/* Sidebar */
+.css-1d391kg {
+    background-color: var(--light-bg);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
