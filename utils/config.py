@@ -20,7 +20,7 @@ for directory in [DATA_DIR, UPLOADS_DIR, HISTORY_DIR, EXPORTS_DIR]:
     directory.mkdir(exist_ok=True, parents=True)
 
 # Configuration API
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", None)  # Changé de "" à None
 DEFAULT_MODEL = os.getenv("DEFAULT_MODEL", "llama-3.3-70b-versatile")
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.3"))
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "4000"))

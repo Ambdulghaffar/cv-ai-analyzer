@@ -4,7 +4,6 @@ Logique d'analyse IA avec Groq
 import json
 from groq import Groq
 from typing import Dict, Optional
-from utils.config import GROQ_API_KEY, DEFAULT_MODEL, TEMPERATURE, MAX_TOKENS
 from src.prompt_templates import (
     SYSTEM_PROMPT,
     ANALYSIS_PROMPT,
@@ -16,16 +15,46 @@ from src.prompt_templates import (
 class CVAnalyzer:
     """Analyseur de CV avec IA"""
     
-    def __init__(self, api_key: str = GROQ_API_KEY, model: str = DEFAULT_MODEL):
-        if not api_key:
-            raise ValueError("Clé API Groq non configurée")
+    def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile"):
+        """
+        Initialise l'analyseur avec une clé API
         
-        self.client = Groq(api_key=api_key)
-        self.model = model
+        Args:
+            api_key: Clé API Groq (OBLIGATOIRE)
+            model: Modèle à utiliser
+        """
+        if not api_key or api_key.strip() == "":
+            raise ValueError("❌ Clé API Groq obligatoire. Entrez votre clé dans la barre latérale.")
+        
+        if not api_key.startswith("gsk_"):
+            raise ValueError("❌ Clé API invalide. Elle doit commencer par 'gsk_'")
+        
+        try:
+            self.client = Groq(api_key=api_key)
+            self.model = model
+            
+            # Test de connexion rapide
+            self._test_connection()
+            
+        except Exception as e:
+            raise ValueError(f"❌ Erreur de connexion à Groq: {str(e)}")
+    
+    def _test_connection(self):
+        """Teste la connexion avec un appel minimal"""
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": "test"}],
+                max_tokens=5,
+                temperature=0
+            )
+            # Si on arrive ici, la clé est valide
+        except Exception as e:
+            raise ValueError(f"❌ Clé API invalide ou problème de connexion: {str(e)}")
     
     def _call_groq(self, prompt: str, system_prompt: str = SYSTEM_PROMPT, 
-                   temperature: float = TEMPERATURE, 
-                   max_tokens: int = MAX_TOKENS) -> str:
+                   temperature: float = 0.3, 
+                   max_tokens: int = 4000) -> str:
         """
         Appel générique à l'API Groq
         """
@@ -153,44 +182,3 @@ class CVAnalyzer:
                 raise ValueError("Aucun JSON trouvé")
         except Exception as e:
             raise Exception(f"Erreur parsing: {str(e)}")
-    
-    def stream_analysis(self, cv_text: str, job_offer: str):
-        """
-        Analyse avec streaming (pour affichage progressif)
-        """
-        prompt = ANALYSIS_PROMPT.format(
-            cv_text=cv_text,
-            job_offer=job_offer
-        )
-        
-        try:
-            stream = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.3,
-                max_tokens=MAX_TOKENS,
-                stream=True
-            )
-            
-            full_response = ""
-            for chunk in stream:
-                if chunk.choices[0].delta.content:
-                    content = chunk.choices[0].delta.content
-                    full_response += content
-                    yield content
-            
-            # Parser le résultat final
-            try:
-                start_idx = full_response.find('{')
-                end_idx = full_response.rfind('}') + 1
-                json_str = full_response[start_idx:end_idx]
-                analysis = json.loads(json_str)
-                yield {"final_analysis": analysis}
-            except:
-                yield {"error": "Erreur parsing JSON"}
-                
-        except Exception as e:
-            yield {"error": str(e)}
